@@ -992,9 +992,6 @@ func (v *proxyTypeError) UnmarshalYAML(unmarshal func(interface{}) error) error 
 		}
 		return unmarshal(&a)
 	}
-	if err := unmarshal(&a); err == nil {
-		panic("should have failed")
-	}
 	return unmarshal(&b)
 }
 
@@ -1010,7 +1007,6 @@ func (s *S) TestUnmarshalerTypeErrorProxying(c *C) {
 	c.Assert(err, ErrorMatches, ""+
 		"yaml: unmarshal errors:\n"+
 		"  line 1: cannot unmarshal !!str `A` into int\n"+
-		"  line 1: cannot unmarshal !!str `a` into int32\n"+
 		"  line 1: cannot unmarshal !!str `b` into int64\n"+
 		"  line 1: cannot unmarshal !!str `B` into int")
 }

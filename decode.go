@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strconv"
 	"time"
+	"unicode/utf8"
 )
 
 const (
@@ -467,6 +468,12 @@ func (d *decoder) scalar(n *node, out reflect.Value) bool {
 				d, err := time.ParseDuration(resolved)
 				if err == nil {
 					out.SetInt(int64(d))
+					return true
+				}
+			} else if utf8.RuneCountInString(resolved) == 1 && out.Kind() == reflect.Int32 {
+				r, _ := utf8.DecodeRune([]byte(resolved))
+				if r != utf8.RuneError {
+					out.SetInt(int64(r))
 					return true
 				}
 			}
